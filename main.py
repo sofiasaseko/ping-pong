@@ -1,4 +1,5 @@
 from pygame import*
+from random import randint
 
 SCREENSIZE=(700,700)
 BACKCOLOR=(176,196,222)
@@ -37,8 +38,42 @@ class Player(GameSprite):
         if keys[K_DOWN] and self.rect.y +  self.rect.height< SCREENSIZE[1]:
             self.rect.y +=self.speed
 
+class Ball(sprite.Sprite):
+    def __init__(self,img,x,y,speed_x,speed_y,width,height):
+        super().__init__()
+        self.image=transform.scale(image.load(img),(width,height))
+        self.speed_x=speed_x
+        self.speed_y=speed_y
+        self.rect=self.image.get_rect()
+        self.rect.x=x
+        self.rect.y=y
+    
+    def reset(self):
+        window.blit(self.image,(self.rect.x,self.rect.y))
+
+    def update_ball(self):
+        self.rect.x +=self.speed_x
+        self.rect.y +=self.speed_y
+
+        if sprite.collide_rect(self,platform_left) or sprite.collide_rect(self,platform_right):
+            self.speed_x *= -1
+
+        if self.rect.y <0 or self.rect.y> SCREENSIZE[1] - self.rect.height:
+            self.speed_y *= -1
+
+    def who_lose(self):
+        if self.rect.x > SCREENSIZE[0] - self.rect.width:
+            return "right"
+        elif self.rect.x < 0:
+            return "left"
+
 platform_left = Player("платформа.jpeg",20,320,4,25,99)
 platform_right = Player("платформа.jpeg",660,320,4,25,99)
+
+x = randint(-5,5)
+y = randint(-5,5)
+
+ball = Ball("шар.png",330,330,x,y,50,50)
 
 while run:
     for e in event.get():
@@ -49,5 +84,7 @@ while run:
     platform_right.reset()
     platform_left.update_left()
     platform_right.update_right()
+    ball.reset()
+    ball.update_ball()
     display.update()
     timer.tick(60)
