@@ -11,6 +11,9 @@ timer=time.Clock()
 
 run=True
 
+mixer.init()
+kick=mixer.Sound("zvuk-udara-po-myachiku.ogg")
+
 class GameSprite(sprite.Sprite):
     def __init__ (self,img,x,y,speed,width,height):
         super().__init__()
@@ -57,6 +60,7 @@ class Ball(sprite.Sprite):
 
         if sprite.collide_rect(self,platform_left) or sprite.collide_rect(self,platform_right):
             self.speed_x *= -1
+            kick.play()
 
         if self.rect.y <0 or self.rect.y> SCREENSIZE[1] - self.rect.height:
             self.speed_y *= -1
@@ -87,6 +91,8 @@ class Wall():
     def draw(self):
         draw.rect(window,self.color,self.rect)
 wall=Wall(345,0,10,700,(255,255,255))
+
+
 
 while run:
     for e in event.get():
