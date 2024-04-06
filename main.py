@@ -80,12 +80,21 @@ finish= False
 font.init()
 font=font.Font(None,50)
 
+class Wall():
+    def __init__ (self,x,y,width,height,color):
+        self.rect=Rect(x,y,width,height)
+        self.color=color
+    def draw(self):
+        draw.rect(window,self.color,self.rect)
+wall=Wall(345,0,10,700,(255,255,255))
+
 while run:
     for e in event.get():
         if e.type == QUIT:
             run=False
     if finish != True:
         window.fill(BACKCOLOR)
+        wall.draw()
         platform_left.reset()
         platform_right.reset()
         platform_left.update_left()
